@@ -18,5 +18,9 @@ train_dataset, val_dataset = torch.utils.data.random_split(total_data, [train, v
 
 test_dataset = datasets.ImageFolder(root='C:/Users/aleja/Datasets/CIFAKE/test', transform=transform)
 
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=64, shuffle=False)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
+
 
 
