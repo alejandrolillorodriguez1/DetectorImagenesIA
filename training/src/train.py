@@ -1,6 +1,7 @@
 from training.src.dataset import train_loader, val_loader, test_loader
 from training.src.model import CNNDetector
 import torch
+from pathlib import Path
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 num_epochs = 5
@@ -54,6 +55,10 @@ def main():
     model = CNNDetector().to(device)
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+    best_val_accuracy = float('inf')
+    project_root = Path(__file__).resolve().parents[2]
+    model_save_path = project_root / "models" / "best_model.pth"
+    model_save_path.parent.mkdir(parents=True, exist_ok=True)
 
     for epoch in range(num_epochs):
         train_loss, train_accuracy = train_one_epoch(model, optimizer, criterion, train_loader)
@@ -62,6 +67,11 @@ def main():
         print(f"Epoch [{epoch + 1}/{num_epochs}]")
         print(f"Train Loss: {train_loss:.4f}, Train Accuracy: {train_accuracy:.4f}")
         print(f"Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_accuracy:.4f}")
+
+
+        if val_accuracy < best_val_accuracy:
+            best_val_accuracy = val_accuracy
+            torch.save(model.state_dict(), model_save_path)
 
 if __name__ == "__main__":
     main()
