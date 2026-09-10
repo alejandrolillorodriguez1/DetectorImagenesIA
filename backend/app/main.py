@@ -4,9 +4,19 @@ from PIL import Image
 from torchvision import transforms
 from training.src.model import CNNDetector
 import torch
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173",
+        "http://127.0.0.1:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model_path = "models/best_model.pth"
 
